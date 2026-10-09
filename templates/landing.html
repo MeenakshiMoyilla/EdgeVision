@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+EdgeVision | Image Edge Detection
+{% endblock %}
+
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-text">
+
+            <div class="badge">
+                Computer Vision • Image Processing
+            </div>
+
+            <h1>
+                Understand Every Edge
+                <span>Inside Your Image.</span>
+            </h1>
+
+            <p>
+                EdgeVision is an interactive image edge detection
+                platform that allows you to analyze images using
+                Sobel, Prewitt and Canny operators.
+            </p>
+
+
+            <div class="hero-buttons">
+
+                <a
+                    href="{{ url_for('register') }}"
+                    class="primary-btn"
+                >
+                    Start Analyzing
+                </a>
+
+                <a
+                    href="#features"
+                    class="secondary-btn"
+                >
+                    Explore Features
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="hero-visual">
+
+            <div class="visual-card">
+
+                <div class="visual-header">
+
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+
+                </div>
+
+
+                <div class="visual-image">
+
+                    <div class="edge-line line-one"></div>
+                    <div class="edge-line line-two"></div>
+                    <div class="edge-line line-three"></div>
+
+                    <div class="visual-label">
+                        EDGE ANALYSIS
+                    </div>
+
+                </div>
+
+
+                <div class="visual-results">
+
+                    <div>
+                        <strong>Sobel</strong>
+                        <span>Gradient</span>
+                    </div>
+
+                    <div>
+                        <strong>Prewitt</strong>
+                        <span>Gradient</span>
+                    </div>
+
+                    <div>
+                        <strong>Canny</strong>
+                        <span>Multi-stage</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section
+    class="features-section"
+    id="features"
+>
+
+    <div class="section-heading">
+
+        <span class="section-tag">
+            Powerful Analysis
+        </span>
+
+        <h2>
+            Everything you need to analyze edges
+        </h2>
+
+        <p>
+            A simple interface backed by traditional
+            computer vision algorithms.
+        </p>
+
+    </div>
+
+
+    <div class="feature-grid">
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                S
+            </div>
+
+            <h3>
+                Sobel Detection
+            </h3>
+
+            <p>
+                Detect horizontal and vertical intensity
+                changes using gradient-based edge detection.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                P
+            </div>
+
+            <h3>
+                Prewitt Detection
+            </h3>
+
+            <p>
+                Analyze image gradients using horizontal
+                and vertical Prewitt operators.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                C
+            </div>
+
+            <h3>
+                Canny Detection
+            </h3>
+
+            <p>
+                Use a multi-stage edge detector with
+                configurable threshold values.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                ↗
+            </div>
+
+            <h3>
+                Performance Analysis
+            </h3>
+
+            <p>
+                Compare processing time and detection
+                performance across different methods.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="workflow-section">
+
+    <div class="section-heading">
+
+        <span class="section-tag">
+            Simple Workflow
+        </span>
+
+        <h2>
+            Analyze an image in three steps
+        </h2>
+
+    </div>
+
+
+    <div class="workflow-grid">
+
+
+        <div class="workflow-card">
+
+            <div class="step-number">
+                01
+            </div>
+
+            <h3>
+                Upload
+            </h3>
+
+            <p>
+                Upload a JPG, JPEG or PNG image.
+            </p>
+
+        </div>
+
+
+        <div class="workflow-card">
+
+            <div class="step-number">
+                02
+            </div>
+
+            <h3>
+                Process
+            </h3>
+
+            <p>
+                EdgeVision applies Sobel, Prewitt
+                and Canny algorithms.
+            </p>
+
+        </div>
+
+
+        <div class="workflow-card">
+
+            <div class="step-number">
+                03
+            </div>
+
+            <h3>
+                Compare
+            </h3>
+
+            <p>
+                View and download the generated
+                edge maps.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="cta-section">
+
+    <div>
+
+        <h2>
+            Ready to explore your image?
+        </h2>
+
+        <p>
+            Create an account and start analyzing images.
+        </p>
+
+    </div>
+
+
+    <a
+        href="{{ url_for('register') }}"
+        class="primary-btn"
+    >
+        Create Free Account
+    </a>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Image Edge Detection Tool</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+
+    <header>
+
+        <div class="container">
+
+            <h1>Image Edge Detection Tool</h1>
+
+            <p>
+                Compare Sobel, Prewitt and Canny Edge Detection
+            </p>
+
+        </div>
+
+    </header>
+
+
+
+    <main class="container">
+
+
+        <section class="upload-section">
+
+            <h2>Upload an Image</h2>
+
+            <p>
+                Supported formats: JPG, JPEG and PNG.
+                Maximum size: 10 MB.
+            </p>
+
+
+            {% if error %}
+
+            <div class="error-message">
+
+                {{ error }}
+
+            </div>
+
+            {% endif %}
+
+
+            <form
+                action="/upload"
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+
+                <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    class="file-input"
+                    accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                    required
+                >
+
+
+                <h3>Canny Thresholds</h3>
+
+
+                <div class="threshold-controls">
+
+
+                    <div>
+
+                        <label for="threshold1">
+                            Lower Threshold
+                        </label>
+
+                        <input
+                            type="number"
+                            id="threshold1"
+                            name="threshold1"
+                            min="0"
+                            max="255"
+                            value="{{ threshold1 if threshold1 else 50 }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label for="threshold2">
+                            Upper Threshold
+                        </label>
+
+                        <input
+                            type="number"
+                            id="threshold2"
+                            name="threshold2"
+                            min="0"
+                            max="255"
+                            value="{{ threshold2 if threshold2 else 150 }}"
+                            required
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <br>
+
+
+                <button
+                    type="submit"
+                    class="process-btn"
+                >
+                    Process Image
+                </button>
+
+
+            </form>
+
+        </section>
+
+
+
+        {% if original_filename %}
+
+        <section class="results-section">
+
+            <h2>Edge Detection Results</h2>
+
+
+            <!-- Image Information -->
+
+            <div class="image-info">
+
+                <h3>Image Information</h3>
+
+                <p>
+                    <strong>Dimensions:</strong>
+                    {{ image_width }} × {{ image_height }} pixels
+                </p>
+
+                <p>
+                    <strong>File Size:</strong>
+                    {{ file_size }} MB
+                </p>
+
+                <p>
+                    <strong>Canny Lower Threshold:</strong>
+                    {{ threshold1 }}
+                </p>
+
+                <p>
+                    <strong>Canny Upper Threshold:</strong>
+                    {{ threshold2 }}
+                </p>
+
+            </div>
+
+
+            <!-- Performance -->
+
+            <div class="image-info">
+
+                <h3>Processing Performance</h3>
+
+                <p>
+                    <strong>Sobel:</strong>
+                    {{ sobel_time }} ms
+                </p>
+
+                <p>
+                    <strong>Prewitt:</strong>
+                    {{ prewitt_time }} ms
+                </p>
+
+                <p>
+                    <strong>Canny:</strong>
+                    {{ canny_time }} ms
+                </p>
+
+                <p>
+                    <strong>Total Edge Detection Time:</strong>
+                    {{ total_time }} ms
+                </p>
+
+            </div>
+
+
+            <!-- Results Grid -->
+
+            <div class="image-grid">
+
+
+                <!-- Original -->
+
+                <div class="image-card">
+
+                    <h3>Original Image</h3>
+
+                    <img
+                        src="{{ url_for(
+                            'uploaded_file',
+                            filename=original_filename
+                        ) }}"
+                        alt="Original Image"
+                    >
+
+                </div>
+
+
+                <!-- Sobel -->
+
+                <div class="image-card">
+
+                    <h3>Sobel Edge Detection</h3>
+
+                    <img
+                        src="{{ url_for(
+                            'output_file',
+                            filename=sobel_filename
+                        ) }}"
+                        alt="Sobel Edge Detection"
+                    >
+
+                    <a
+                        href="{{ url_for(
+                            'output_file',
+                            filename=sobel_filename
+                        ) }}"
+                        download
+                        class="download-btn"
+                    >
+                        Download Sobel
+                    </a>
+
+                </div>
+
+
+                <!-- Prewitt -->
+
+                <div class="image-card">
+
+                    <h3>Prewitt Edge Detection</h3>
+
+                    <img
+                        src="{{ url_for(
+                            'output_file',
+                            filename=prewitt_filename
+                        ) }}"
+                        alt="Prewitt Edge Detection"
+                    >
+
+                    <a
+                        href="{{ url_for(
+                            'output_file',
+                            filename=prewitt_filename
+                        ) }}"
+                        download
+                        class="download-btn"
+                    >
+                        Download Prewitt
+                    </a>
+
+                </div>
+
+
+                <!-- Canny -->
+
+                <div class="image-card">
+
+                    <h3>Canny Edge Detection</h3>
+
+                    <img
+                        src="{{ url_for(
+                            'output_file',
+                            filename=canny_filename
+                        ) }}"
+                        alt="Canny Edge Detection"
+                    >
+
+                    <a
+                        href="{{ url_for(
+                            'output_file',
+                            filename=canny_filename
+                        ) }}"
+                        download
+                        class="download-btn"
+                    >
+                        Download Canny
+                    </a>
+
+                </div>
+
+
+            </div>
+
+
+            <a
+                href="/"
+                class="reset-btn"
+            >
+                Process Another Image
+            </a>
+
+
+        </section>
+
+        {% endif %}
+
+
+    </main>
+
+
+
+    <footer>
+
+        <p>
+            Image Edge Detection Tool |
+            Sobel • Prewitt • Canny
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>

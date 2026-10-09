@@ -1,0 +1,542 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard | EdgeVision
+{% endblock %}
+
+{% block content %}
+
+<main class="dashboard-container">
+
+```
+<section class="dashboard-header">
+
+    <div class="dashboard-title-area">
+
+        <span class="section-tag">
+            EdgeVision Dashboard
+        </span>
+
+        <h1>
+            Welcome back, {{ user_name }}
+        </h1>
+
+        <p>
+            Upload an image and compare Sobel, Prewitt,
+            and Canny edge detection techniques.
+        </p>
+
+    </div>
+
+    <div class="dashboard-header-badge">
+        <span class="status-dot"></span>
+        System Ready
+    </div>
+
+</section>
+
+
+<section class="analysis-panel">
+
+    <div class="panel-heading">
+
+        <div class="panel-title">
+
+            <div class="panel-icon">
+                +
+            </div>
+
+            <div>
+                <h2>
+                    Analyze an Image
+                </h2>
+
+                <p>
+                    Upload an image to generate and compare
+                    three edge maps.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% if error %}
+
+    <div class="error-message">
+        {{ error }}
+    </div>
+
+    {% endif %}
+
+
+    <form
+        action="{{ url_for('upload_image') }}"
+        method="POST"
+        enctype="multipart/form-data"
+    >
+
+        <div class="upload-box">
+
+            <div class="upload-icon">
+                ↑
+            </div>
+
+            <h3>
+                Upload your image
+            </h3>
+
+            <p>
+                Drag and drop your image here or select a file
+            </p>
+
+            <div class="file-format">
+                JPG · JPEG · PNG · Maximum 10 MB
+            </div>
+
+            <input
+                type="file"
+                id="image"
+                name="image"
+                accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                required
+            >
+
+        </div>
+
+
+        <div class="threshold-section">
+
+            <div class="threshold-heading">
+
+                <div>
+                    <h3>
+                        Canny Configuration
+                    </h3>
+
+                    <p>
+                        Customize the thresholds used by the
+                        Canny edge detector.
+                    </p>
+                </div>
+
+                <span class="settings-label">
+                    Optional
+                </span>
+
+            </div>
+
+
+            <div class="threshold-controls">
+
+                <div class="input-group">
+
+                    <label for="threshold1">
+                        Lower Threshold
+                    </label>
+
+                    <input
+                        type="number"
+                        id="threshold1"
+                        name="threshold1"
+                        min="0"
+                        max="255"
+                        value="{{ threshold1 if threshold1 else 50 }}"
+                        required
+                    >
+
+                    <small>
+                        Recommended: 50
+                    </small>
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label for="threshold2">
+                        Upper Threshold
+                    </label>
+
+                    <input
+                        type="number"
+                        id="threshold2"
+                        name="threshold2"
+                        min="0"
+                        max="255"
+                        value="{{ threshold2 if threshold2 else 150 }}"
+                        required
+                    >
+
+                    <small>
+                        Recommended: 150
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="process-btn large-btn"
+        >
+            Analyze Image
+            <span class="button-arrow">
+                →
+            </span>
+        </button>
+
+    </form>
+
+</section>
+
+
+{% if original_filename %}
+
+<section class="results-section">
+
+    <div class="results-header">
+
+        <div class="section-heading left-heading">
+
+            <span class="section-tag">
+                Analysis Complete
+            </span>
+
+            <h2>
+                Edge Detection Results
+            </h2>
+
+            <p>
+                Visual comparison of the original image
+                and generated edge maps.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                IMG
+            </div>
+
+            <div>
+                <span>
+                    Image Size
+                </span>
+
+                <strong>
+                    {{ image_width }} × {{ image_height }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                KB
+            </div>
+
+            <div>
+                <span>
+                    File Size
+                </span>
+
+                <strong>
+                    {{ file_size }} MB
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                MS
+            </div>
+
+            <div>
+                <span>
+                    Total Processing
+                </span>
+
+                <strong>
+                    {{ total_time }} ms
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="image-grid">
+
+
+        <div class="image-card original-card">
+
+            <div class="card-heading">
+
+                <div>
+                    <h3>
+                        Original Image
+                    </h3>
+
+                    <span class="card-label">
+                        Input
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="image-wrapper">
+
+                <img
+                    src="{{ url_for(
+                        'uploaded_file',
+                        filename=original_filename
+                    ) }}"
+                    alt="Original Image"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="image-card">
+
+            <div class="card-heading">
+
+                <div>
+                    <h3>
+                        Sobel
+                    </h3>
+
+                    <span class="card-label">
+                        Gradient-based detection
+                    </span>
+                </div>
+
+                <span class="processing-time">
+                    {{ sobel_time }} ms
+                </span>
+
+            </div>
+
+            <div class="image-wrapper edge-result">
+
+                <img
+                    src="{{ url_for(
+                        'output_file',
+                        filename=sobel_filename
+                    ) }}"
+                    alt="Sobel Edge Detection"
+                >
+
+            </div>
+
+            <a
+                href="{{ url_for(
+                    'output_file',
+                    filename=sobel_filename
+                ) }}"
+                download
+                class="download-btn"
+            >
+                Download Result
+                <span>↓</span>
+            </a>
+
+        </div>
+
+
+        <div class="image-card">
+
+            <div class="card-heading">
+
+                <div>
+                    <h3>
+                        Prewitt
+                    </h3>
+
+                    <span class="card-label">
+                        Edge gradient detection
+                    </span>
+                </div>
+
+                <span class="processing-time">
+                    {{ prewitt_time }} ms
+                </span>
+
+            </div>
+
+            <div class="image-wrapper edge-result">
+
+                <img
+                    src="{{ url_for(
+                        'output_file',
+                        filename=prewitt_filename
+                    ) }}"
+                    alt="Prewitt Edge Detection"
+                >
+
+            </div>
+
+            <a
+                href="{{ url_for(
+                    'output_file',
+                    filename=prewitt_filename
+                ) }}"
+                download
+                class="download-btn"
+            >
+                Download Result
+                <span>↓</span>
+            </a>
+
+        </div>
+
+
+        <div class="image-card">
+
+            <div class="card-heading">
+
+                <div>
+                    <h3>
+                        Canny
+                    </h3>
+
+                    <span class="card-label">
+                        Multi-stage edge detection
+                    </span>
+                </div>
+
+                <span class="processing-time">
+                    {{ canny_time }} ms
+                </span>
+
+            </div>
+
+            <div class="image-wrapper edge-result">
+
+                <img
+                    src="{{ url_for(
+                        'output_file',
+                        filename=canny_filename
+                    ) }}"
+                    alt="Canny Edge Detection"
+                >
+
+            </div>
+
+            <a
+                href="{{ url_for(
+                    'output_file',
+                    filename=canny_filename
+                ) }}"
+                download
+                class="download-btn"
+            >
+                Download Result
+                <span>↓</span>
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="performance-card">
+
+        <div class="performance-header">
+
+            <div>
+                <span class="section-tag">
+                    Performance
+                </span>
+
+                <h3>
+                    Processing Performance
+                </h3>
+
+                <p>
+                    Time taken by each edge detection method.
+                </p>
+            </div>
+
+            <div class="total-performance">
+                <span>Total</span>
+                <strong>{{ total_time }} ms</strong>
+            </div>
+
+        </div>
+
+
+        <div class="performance-list">
+
+            <div class="performance-row">
+
+                <div class="method-name">
+                    <span class="method-indicator sobel-indicator"></span>
+                    Sobel
+                </div>
+
+                <strong>
+                    {{ sobel_time }} ms
+                </strong>
+
+            </div>
+
+
+            <div class="performance-row">
+
+                <div class="method-name">
+                    <span class="method-indicator prewitt-indicator"></span>
+                    Prewitt
+                </div>
+
+                <strong>
+                    {{ prewitt_time }} ms
+                </strong>
+
+            </div>
+
+
+            <div class="performance-row">
+
+                <div class="method-name">
+                    <span class="method-indicator canny-indicator"></span>
+                    Canny
+                </div>
+
+                <strong>
+                    {{ canny_time }} ms
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
+```
+
+</main>
+
+{% endblock %}
